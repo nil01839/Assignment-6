@@ -20,4 +20,35 @@ const showCategoryData = categories =>{
     })
 
 }
+
+const loadNewsByCategory =async id =>{
+    const url =`https://openapi.programming-hero.com/api/news/category/${id}`;
+    const res = await fetch(url);
+    const data = await res.json();
+    showNewsByCategory(data.data);
+    //initModal();
+}
+
+const showNewsByCategory = allNews =>{
+    //console.log(allNews);
+    const newsByCategoryContainer = document.getElementById('show-news-by-caegory');
+    newsByCategoryContainer.textContent = '';
+    allNews.forEach(news=>{
+        const newsDiv = document.createElement('div');
+        newsDiv.classList.add('col');
+        newsDiv.innerHTML = `
+        <!-- Card -->
+        <div class="card">
+          <img src="${news.image_url}" class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">${news.title}</h5>
+            <p class="card-text">${news.details}</p>
+          </div>
+        </div>
+        `
+        newsByCategoryContainer.appendChild(newsDiv);
+    })
+
+}
+
 loadCategoryData();
