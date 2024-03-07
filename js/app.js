@@ -6,7 +6,7 @@ const loadCategoryData = async() =>{
 }
 
 const showCategoryData = categories =>{
-     //console.log(categories);
+     console.log(categories);
     const categoriesContainer = document.getElementById('category-container');
     categories.forEach(category=>{
         const categoryDiv = document.createElement('div');
@@ -29,11 +29,16 @@ const loadNewsByCategory =async id =>{
     //initModal();
 }
 
+const excerpt = (text) => {
+    return text.substring(0, 120) + '...';
+}
+
 const showNewsByCategory = allNews =>{
     //console.log(allNews);
     const newsByCategoryContainer = document.getElementById('show-news-by-caegory');
     newsByCategoryContainer.textContent = '';
     allNews.forEach(news=>{
+        //console.log(news._id);
         const newsDiv = document.createElement('div');
         newsDiv.classList.add('col');
         newsDiv.innerHTML = `
@@ -42,7 +47,16 @@ const showNewsByCategory = allNews =>{
           <img src="${news.image_url}" class="card-img-top" alt="...">
           <div class="card-body">
             <h5 class="card-title">${news.title}</h5>
-            <p class="card-text">${news.details}</p>
+            <p class="card-text">${excerpt(news.details)}</p>
+            <div>
+                <div>Author: ${news.author.name}</div>
+                <div>Date: ${news.author.published_date}</div>
+                <div>Views: ${news.total_view}</div>
+                <div>Rating: ${news.rating.number}</div>
+
+                <button onClick="loadDetails('${news._id}')" href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#newsDetailModal">Show Details</button>
+
+            </div>
           </div>
         </div>
         `
@@ -51,4 +65,23 @@ const showNewsByCategory = allNews =>{
 
 }
 
+const loadDetails = async(idd) =>{
+    const url = `https://openapi.programming-hero.com/api/news/${idd}`
+    const res = await fetch(url);
+    const data = await res.json();
+    showNewsDetails(data.data[0]);
+}
+
+const showNewsDetails = news =>{
+    console.log(news);
+    const modalTitle = document.getElementById('newsTitle');
+    modalTitle.innerHTML = news.title;
+    const detailsContainer = document.getElementById('news-details');
+    detailsContainer.innerHTML = `
+    <p>${news.details}</p>
+    `
+    
+}
 loadCategoryData();
+loadNewsByCategory("08");
+
